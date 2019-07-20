@@ -1,6 +1,8 @@
 <html>
     <body>
         <h1>{{ name|title }}</h1>
+        {% if not is_active %}
         <img src="/static/qrcodes/{{ name }}.png"/>
+        {% endif %}
     </body>
 </html>

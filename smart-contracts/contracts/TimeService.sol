@@ -8,7 +8,7 @@ contract TimeService {
     uint256 public funds;
 
 
-    function create() public payable {
+    function() external payable {
         require(now > end_timestamp, "Contract already activated");
         create_timestamp = now;
         funds += msg.value;
