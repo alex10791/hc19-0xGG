@@ -5,7 +5,7 @@ const int closePin = 3;
 int sensorValue = 0;
 
 void setup() {
-  Serial.begin(9600);
+//  Serial.begin(9600);
   pinMode(openPin, OUTPUT);
   pinMode(closePin, OUTPUT);
 }
@@ -22,14 +22,14 @@ int debounce_limit = 10;
 void loop() {
 
 
-  if (state == STATE_OFF)
-    Serial.println("STATE_OFF");
-  else if (state == STATE_DEBOUNCE_ON)
-    Serial.println("STATE_DEBOUNCE_ON");
-  else if (state == STATE_ON)
-    Serial.println("STATE_ON");
-  else if (state == STATE_DEBOUNCE_OFF)
-    Serial.println("STATE_DEBOUNCE_OFF");
+//  if (state == STATE_OFF)
+//    Serial.println("STATE_OFF");
+//  else if (state == STATE_DEBOUNCE_ON)
+//    Serial.println("STATE_DEBOUNCE_ON");
+//  else if (state == STATE_ON)
+//    Serial.println("STATE_ON");
+//  else if (state == STATE_DEBOUNCE_OFF)
+//    Serial.println("STATE_DEBOUNCE_OFF");
 
 
   if (state == STATE_OFF) {
