@@ -37,7 +37,8 @@ def check_power_socket(service):
     power_socket = service['object']
     new_is_active = power_socket.is_active()
     if service['active'] == False and new_is_active == True:
-        service['active'] = power_socket.get_end_time()
+        service['endtime'] = power_socket.get_end_time()
+        print('endtime: {}'.format(service['endtime']))
     elif service['active'] == True and new_is_active == False:
         pass
     service['active'] = new_is_active
@@ -47,7 +48,7 @@ def check_wifi(service):
     wifi = service['object']
     new_is_active = wifi.is_active()
     if service['active'] == False and new_is_active == True:
-        service['active'] = wifi.get_end_time()
+        service['endtime'] = wifi.get_end_time()
         subprocess.call(['systemctl', 'start', 'wifiap'])
     elif service['active'] == True and new_is_active == False:
         subprocess.call(['systemctl', 'stop', 'wifiap'])
