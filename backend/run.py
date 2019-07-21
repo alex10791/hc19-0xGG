@@ -5,7 +5,7 @@ import subprocess
 from datetime import datetime
 from TimeService import TimeService
 from flask import Flask, render_template
-
+from hardware.relay_controlls import enable_power, disable_power
 
 services = {
     'power-socket' : {
@@ -39,8 +39,8 @@ def check_power_socket(service):
     if service['active'] == False and new_is_active == True:
         service['endtime'] = power_socket.get_end_time()
         print('endtime: {}'.format(service['endtime']))
-    elif service['active'] == True and new_is_active == False:
-        pass
+    elif new_is_active == False:
+        disable_power()
     service['active'] = new_is_active
 
 
@@ -50,7 +50,8 @@ def check_wifi(service):
     if service['active'] == False and new_is_active == True:
         service['endtime'] = wifi.get_end_time()
         subprocess.call(['systemctl', 'start', 'wifiap'])
-    elif service['active'] == True and new_is_active == False:
+        enable_power()
+    elif new_is_active == False:
         subprocess.call(['systemctl', 'stop', 'wifiap'])
     service['active'] = new_is_active
 
