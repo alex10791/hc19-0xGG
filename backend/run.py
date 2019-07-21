@@ -5,7 +5,17 @@ import subprocess
 from datetime import datetime
 from TimeService import TimeService
 from flask import Flask, render_template
-from hardware.relay_controlls import enable_power, disable_power
+# from hardware.relay_controlls import enable_power, disable_power
+from gpiozero import LED
+
+power_enabled_pin = LED(23)
+
+def enable_power():
+    power_enabled_pin.on()
+
+
+def disable_power():
+    power_enabled_pin.off()
 
 services = {
     'power-socket' : {
