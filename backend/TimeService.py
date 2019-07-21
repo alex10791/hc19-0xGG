@@ -10,10 +10,10 @@ class TimeService:
         self.contract = web3.eth.contract(address=contract_address, abi=contract_abi)
 
     def is_active(self):
-        return self.contract.functions.call().isActive()
+        return self.contract.call().isActive()
 
     def get_end_time(self):
-        return self.contract.functions.call().getEndTime()
+        return self.contract.call().getEndTime()
 
 
 if __name__ == "__main__":
