@@ -61,7 +61,7 @@ def check_wifi(service):
     if service['active'] == False and new_is_active == True:
         service['endtime'] = wifi.get_end_time()
         subprocess.call(['systemctl', 'start', 'create_ap'])
-    elif new_is_active == False:
+    elif service['active'] == True and new_is_active == False:
         subprocess.call(['systemctl', 'stop', 'create_ap'])
     service['active'] = new_is_active
 
