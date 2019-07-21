@@ -1,7 +1,4 @@
 from gpiozero import LED
-
-if __name__ == '__main__':
-    pass
     
 power_enabled_pin = LED(22)
 
@@ -10,4 +7,13 @@ def enable_power():
     
 def disable_power():
     power_enabled_pin.off()
+    
+
+if __name__ == '__main__':
+    import time
+    while True:
+        enable_power()
+        time.sleep(1)
+        disable_power()
+        time.sleep(1)
     
