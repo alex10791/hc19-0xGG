@@ -1,8 +1,11 @@
 import threading
 import atexit
 import qrcode
+import subprocess
+from datetime import datetime
 from TimeService import TimeService
 from flask import Flask, render_template
+
 
 services = {
     'power-socket' : {
@@ -12,7 +15,7 @@ services = {
         'active' : False
     },
     'wifi' : {
-        'address' : '0x313f9b80B296388042b0d611F0b342bccf83B417',
+        'address' : '0xef58a22c82cf0cc8fb0f038259ed651315a98717',
         'object'  : None,
         'endtime' : 0,
         'active' : False
@@ -29,36 +32,58 @@ dataLock = threading.Lock()
 # thread handler
 ioThread = threading.Thread()
 
+
 def check_power_socket(service):
     power_socket = service['object']
     new_is_active = power_socket.is_active()
     if service['active'] == False and new_is_active == True:
         service['active'] = power_socket.get_end_time()
+    elif service['active'] == True and new_is_active == False:
+        pass
     service['active'] = new_is_active
 
-# def check_wifi():
-#     is_active = True
-    
-#     if is_active:
-#         if services['active'] == False:
-#             # start wifi
-#             services['active'] = True
-#         else:
-#             pass
-#     else:
-#         services['']
+
+def check_wifi(service):
+    wifi = service['object']
+    new_is_active = wifi.is_active()
+    if service['active'] == False and new_is_active == True:
+        service['active'] = wifi.get_end_time()
+        subprocess.call(['systemctl', 'start', 'wifiap'])
+    elif service['active'] == True and new_is_active == False:
+        subprocess.call(['systemctl', 'stop', 'wifiap'])
+    service['active'] = new_is_active
 
 
 def create_app():
     app = Flask(__name__)
 
     @app.route("/power-socket")
-    def switch_endpoint():
-        return render_template('time-service.html', name='power-socket', is_active=services['power-socket']['active'])
+    def power_socket_endpoint():
+        return render_template(
+            'time-service.html', 
+            name='power-socket', 
+            is_active=services['power-socket']['active'], 
+            endtime=datetime.fromtimestamp(services['power-socket']['endtime']).strftime('%d-%m-%Y %H:%M:%S'),
+            next='wifi'
+        )
+    
+    @app.route("/power-socket/active")
+    def power_socket_active_endpoint():
+        return "%s" % services['power-socket']['active']
 
     @app.route("/wifi")
     def wifi_endpoint():
-        return render_template('time-service.html', name='wifi', is_active=services['wifi']['active'])
+        return render_template(
+            'time-service.html', 
+            name='wifi', 
+            is_active=services['wifi']['active'], 
+            endtime=datetime.fromtimestamp(services['wifi']['endtime']).strftime('%d-%m-%Y %H:%M:%S'),
+            next='power-socket'
+        )
+    
+    @app.route("/wifi/active")
+    def wifi_active_endpoint():
+        return "%s" % services['wifi']['active']
 
     def interrupt():
         global ioThread
@@ -71,6 +96,7 @@ def create_app():
         with dataLock:
             print("hello")
             check_power_socket(services['power-socket'])
+            check_wifi(services['wifi'])
 
         ioThread = threading.Timer(POOL_TIME, doStuff, ())
         ioThread.start()   

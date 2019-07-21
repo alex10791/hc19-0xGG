@@ -3,6 +3,34 @@
         <h1>{{ name|title }}</h1>
         {% if not is_active %}
         <img src="/static/qrcodes/{{ name }}.png"/>
+        {% else %}
+        <h2>Expires on: {{ endtime }}</h2>
         {% endif %}
+        <script>
+
+            document.addEventListener('keydown', logKey);
+            function logKey(e) {
+                console.log(e.code)
+                if (e.which == 91) {
+                    console.log('Pressed')
+                    location.href = '/{{ next }}'
+                }
+            }
+
+            var xmlhttp = new XMLHttpRequest();
+            var myInterval = setInterval(function() {
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+                        if (xmlhttp.status == 200) {
+                            if (xmlhttp.responseText == "True") {
+                                location.reload(true)
+                            }
+                        }
+                    }
+                };
+                xmlhttp.open("GET", "/{{ name }}/active", true);
+                xmlhttp.send();
+            }, 5000);
+        </script>
     </body>
 </html>
